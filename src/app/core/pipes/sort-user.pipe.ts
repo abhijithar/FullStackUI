@@ -7,7 +7,7 @@ import { User } from '../models/user';
 export class SortUserPipe implements PipeTransform {
 
   transform(value: User[], propertyName: string): User[] {
-    if (propertyName)
+    if (propertyName && value)
       return value.sort((a: User, b: User) => b[propertyName].localeCompare(a[propertyName]));
     else
       return value;

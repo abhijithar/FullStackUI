@@ -1,22 +1,35 @@
-<div class="container">
+<div class="jumbotron">
 
-  <div style="text-align:center">
-    <h1> {{ title }} </h1>
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h2> {{ title }} </h2>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs nav-justified">
+
+      <li class="nav-item">
+        <a class="nav-link active" [routerLink]="['/project']">Add Project</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link active" [routerLink]="['/user']">Add User</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link active" [routerLink]="['/user']">Add Task</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link active" [routerLink]="['/user']">View Task</a>
+      </li>
+
+    </ul>
+
+    <br>
+    <router-outlet></router-outlet>
+
   </div>
-
-  <ul class="nav nav-pills">
-
-    <li class="nav-item">
-      <a class="nav-link active" [routerLink]="['/project']">Add Project</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link active" [routerLink]="['/user']">Add User</a>
-    </li>
-
-  </ul>
-
-  <br>
-  <router-outlet></router-outlet>
-
 </div>

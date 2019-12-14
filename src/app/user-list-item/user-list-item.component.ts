@@ -12,13 +12,32 @@ import { UserService } from '../core/services/user.service';
 export class UserListItemComponent implements OnInit {
 
   @Input() userData: User;
-  @Output() userDataProcessed = new EventEmitter();
-  
+  @Output() userSelected = new EventEmitter();
+  @Output() reloadUser = new EventEmitter();
+
   constructor(
     private userSvc: UserService
   ) { }
 
   ngOnInit() {
+  }
+
+  onDeleteUser(userData: User, id: string) {
+
+    // Get the list of Users
+    this.userSvc.removeUser(id).subscribe(
+      (res: User) => {
+        this.reloadUser.emit(true);
+      }
+    );
+
+  }
+
+  onUpdateUser(userData: User) {
+
+    // Get the list of Users
+    this.userSelected.emit(userData);
+
   }
 
 }

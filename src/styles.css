@@ -1,1 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
+.custom-select.is-invalid, .form-control.is-invalid, .was-validated .custom-select:invalid, .was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
