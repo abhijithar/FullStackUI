@@ -1,7 +1,7 @@
 <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
 
   <div class="form-group row">
-    <label for="project" class="col-sm-2 col-form-label">Project</label>
+    <label class="col-sm-2 col-form-label">Project</label>
     <div class="col-sm-5">
       <input type="text" class="form-control" id="project" formControlName="project" [ngClass]="{ 'is-invalid': validateControls && formControls.project.errors }">
     </div>
@@ -23,13 +23,13 @@
 
     <div class="col-sm-2">
       <input type="date" class="form-control" formControlName="startDate" [ngClass]="{ 'is-invalid': formControls.setDates && validateControls && formControls.startDate.errors }">
-      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+      <div *ngIf="validateControls && formControls.startDate.errors" class="invalid-feedback">
         <div *ngIf="formControls.startDate.errors.required">Start date is required</div>
       </div>
     </div>
     <div class="col-sm-2">
       <input type="date" class="form-control" formControlName="endDate" [ngClass]="{ 'is-invalid': formControls.setDates && validateControls && formControls.endDate.errors }">
-      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+      <div *ngIf="validateControls && formControls.endDate.errors" class="invalid-feedback">
         <div *ngIf="formControls.endDate.errors.required">End date is required</div>
       </div>
     </div>
@@ -48,7 +48,7 @@
     <div class="col-sm-4">
       <input type="text" class="form-control" formControlName="manager_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.manager_Id.errors }"
         [disableControl]="true">
-      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+      <div *ngIf="validateControls && formControls.manager_Id.errors" class="invalid-feedback">
         <div *ngIf="formControls.manager_Id.errors.required">Manager id is required</div>
       </div>
     </div>
@@ -128,7 +128,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <ul class="list-group" id="projectList">
+        <ul class="list-group" id="userList">
           <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let user of userList">
             <button type="button" class="list-group-item list-group-item-action" data-dismiss="modal" (click)="onUserSelected(user)">{{user.firstName}}
               {{user.lastName}}

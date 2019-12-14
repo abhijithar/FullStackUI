@@ -1,51 +1,54 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
- 
+
 import { User } from '../core/models/user';
+import { Task } from '../core/models/task';
 import { Project } from '../core/models/project';
 
 import { ProjectService } from '../core/services/project.service';
 import { UserService } from '../core/services/user.service';
+import { TaskService } from '../core/services/task.service';
 
 @Component({
-  selector: 'app-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.css'],
+  selector: 'app-task',
+  templateUrl: './task.component.html',
+  styleUrls: ['./task.component.css'],
   providers: [DatePipe]
 })
-export class ProjectComponent implements OnInit {
+export class TaskComponent implements OnInit {
 
   // Component variables
-  projectForm: FormGroup;
+  taskForm: FormGroup;
+  taskData: Task;
+  taskList: Task[];
   projectData: Project;
   projectList: Project[];
   userData: User;
   userList: User[];
-  sortOrder: string = 'project';
   validateControls: boolean = false;
   updateBtn: boolean = false;
 
   constructor(
     private projectSvc: ProjectService,
     private userSvc: UserService,
+    private taskSvc: TaskService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe
   ) { }
 
   ngOnInit() {
 
-    this.updateBtn = false;
-
     // Define the from group for project
-    this.projectForm = this.formBuilder.group({
-      project_Id: [''],
-      project: ['', Validators.required],
-      setDates: [false],
+    this.taskForm = this.formBuilder.group({
+      project_Id: ['', Validators.required],
+      task: ['', Validators.required],
+      parentTask: [false],
+      priority: [{ value: 0, disabled: true }, Validators.required],
+      parentTask_Id: [{ value: '', disabled: true }, Validators.required],
       startDate: [{ value: '', disabled: true }, Validators.required],
       endDate: [{ value: '', disabled: true }, Validators.required],
-      priority: [''],
-      manager_Id: ['', Validators.required]
+      user_Id: [{ value: '', disabled: true }, Validators.required],
     });
 
     // Get the list of projects
@@ -55,14 +58,14 @@ export class ProjectComponent implements OnInit {
     this.getUsers();
 
     // Set the value changes subscription
-    this.formControls.setDates.valueChanges.subscribe(selection =>
-      this.setDateStatus(selection)
+    this.formControls.parentTask.valueChanges.subscribe(selection =>
+      this.setParentTask(selection)
     );
 
   }
 
   // Convenience getter for easy access to form fields
-  get formControls() { return this.projectForm.controls; }
+  get formControls() { return this.taskForm.controls; }
 
   // Get the list of projects
   getProjects() {
@@ -87,51 +90,10 @@ export class ProjectComponent implements OnInit {
 
   }
 
-  // Component method for adding a new User
-  onReset() {
+  setParentTask(enable) {
 
-    this.validateControls = false;
-    this.projectForm.reset();
-
-  }
-
-  onSortByStartDate() {
-    this.sortOrder = 'startDate';
-  }
-
-  onSortByEndDate() {
-    this.sortOrder = 'endDate';
-  }
-
-  onSortByPriority() {
-    this.sortOrder = 'priority';
-  }
-
-  onSortByCompleted() {
-    this.sortOrder = 'completed';
-  }
-
-  onProjectSelected(projectData: Project) {
-    
-    if (projectData !== null) {
-
-      let strDate = new Date(projectData.startDate);
-      let endDate = new Date(projectData.endDate);
-
-      this.projectForm.patchValue({
-        project: projectData.project,
-        startDate: this.datePipe.transform(strDate, 'yyyy-MM-dd'),
-        endDate: this.datePipe.transform(endDate, 'yyyy-MM-dd'),
-        priority: projectData.priority,
-        manager_Id: projectData.manager_Id
-      });
-      this.updateBtn = true;
-    }
-
-  }
-
-  setDateStatus(enable) {
-    if (enable) {
+    if (!enable) {
+      this.formControls.priority.enable();
       this.formControls.startDate.enable();
       this.formControls.endDate.enable();
       let wrkDate = new Date();
@@ -139,6 +101,7 @@ export class ProjectComponent implements OnInit {
       wrkDate.setDate(wrkDate.getDate() - 1);
       this.formControls.endDate.setValue(this.datePipe.transform(wrkDate, 'yyyy-MM-dd'));
     } else {
+      this.formControls.priority.disable();
       this.formControls.startDate.disable();
       this.formControls.endDate.disable();
       this.formControls.startDate.reset();
@@ -147,35 +110,40 @@ export class ProjectComponent implements OnInit {
 
   }
 
-  onAddProject() {
+  onAddTask() {
+
+    console.log(this.taskForm.value);
 
     this.validateControls = true;
 
-    if (this.projectForm.invalid) {
+    if (this.taskForm.invalid) {
       return
     } else {
 
       // Assign the model from the form values
-      this.projectData = this.projectForm.value;
-      this.projectData.manager_Id = this.formControls.manager_Id.value;
-      console.log(this.projectData);
+      this.taskData = this.taskForm.value;
+      this.taskData.project_Id = this.formControls.project_Id.value;
+      this.taskData.user_Id = this.formControls.user_Id.value;
+      this.taskData.parentTask_Id = this.formControls.parentTask_Id.value;
 
       // Invoke the addUser service method for adding the user details
-      this.projectSvc.addProject(this.projectData).subscribe(
+      this.taskSvc.addTask(this.taskData).subscribe(
         (res: any) => {
-          this.projectForm.reset();
+          this.taskForm.reset();
           this.validateControls = false;
         }
       );
 
-      // Get the list of Projects after add to repopulate the grid
-      this.getProjects();
     }
 
   }
 
   onUserSelected(user: User) {
-    this.formControls.manager_Id.setValue(user.employee_Id)
+    this.formControls.user_Id.setValue(user.user_Id)
+  }
+
+  onProjectSelected(project: Project) {
+    this.formControls.project_Id.setValue(project.project_Id)
   }
 
 }

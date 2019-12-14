@@ -6,7 +6,7 @@ export class Project {
         public startDate: Date,
         public endDate: Date,
         public priority: string,
-        public manager_id: string
+        public manager_Id: string
     ) {}
 
 }

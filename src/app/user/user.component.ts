@@ -74,6 +74,32 @@ export class UserComponent implements OnInit {
 
   }
 
+  // Component method for updating the User
+  onUpdateUser() {
+
+    this.validateControls = true;
+
+    if (this.userForm.invalid) {
+      return
+    } else {
+
+      // Assign the model from the form values
+      this.userData = this.userForm.value;
+
+      // Invoke the addUser service method for adding the user details
+      this.userSvc.updateUser(this.userData).subscribe(
+        (res: any) => {
+          this.userForm.reset();
+          this.validateControls = false;  
+        }
+      );
+
+      // Get the list of Users after add to repopulate the grid
+      this.getUsers();
+    }
+
+  }
+
   // Component method for adding a new User
   onReset() {
 

@@ -14,6 +14,7 @@ import { ProjectListItemComponent } from './project-list-item/project-list-item.
 import { SortProjectPipe } from './core/pipes/sort-project.pipe';
 import { FilterProjectPipe } from './core/pipes/filter-project.pipe';
 import { DisableControlDirective } from './core/directives/disable-control.directive';
+import { TaskComponent } from './task/task.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DisableControlDirective } from './core/directives/disable-control.direc
     ProjectListItemComponent,
     SortProjectPipe,
     FilterProjectPipe,
-    DisableControlDirective
+    DisableControlDirective,
+    TaskComponent
   ],
   imports: [
     BrowserModule,

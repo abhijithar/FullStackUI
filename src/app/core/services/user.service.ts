@@ -37,4 +37,10 @@ export class UserService {
       .delete<User>(this.userSvcBaseUrl + '/' + id, httpOptions);
   }
 
+  // Update user to the collection
+  updateUser(userData: User): Observable<User> {
+    return this.http
+      .put<User>(this.userSvcBaseUrl + '/', userData, httpOptions);
+  }  
+
 }
