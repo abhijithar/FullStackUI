@@ -1,0 +1,50 @@
+<form>
+
+    <div class="form-group row">
+  
+      <div class="col-sm-8">
+  
+        <div class="form-group row">
+          <label class="col-sm-1 col-form-label">Project:</label>
+          <label class="col-sm-5 col-form-label">{{projectData.project}}</label>
+        </div>
+  
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">No of Tasks:</label>
+          <label class="col-sm-2 col-form-label"></label>
+  
+          <label class="col-sm-2 col-form-label">Completed:</label>
+          <label class="col-sm-2 col-form-label"></label>
+        </div>
+  
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Start Date:</label>
+          <label class="col-sm-2 col-form-label">{{formatDate(projectData.startDate)}}</label>
+  
+          <label class="col-sm-2 col-form-label">End Date:</label>
+          <label class="col-sm-2 col-form-label">{{formatDate(projectData.endDate)}}</label>
+        </div>
+  
+      </div>
+  
+      <div class="col-sm-1">
+        <div class="form-group row">
+          <label class="col-form-label">Priority</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label">{{projectData.priority}}</label>
+        </div>
+      </div>
+  
+      <div class="col-sm-2">
+        <div class="form-group row">
+          <button type="button" class="btn btn-primary btn-block" (click)="onUpdateUser(projectData)">Update</button>
+        </div>
+        <div class="form-group row">
+            <button type="button" class="btn btn-primary btn-block">Suspend</button>
+        </div>
+      </div>
+  
+    </div>
+  
+  </form>

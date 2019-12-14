@@ -11,8 +11,9 @@ export class FilterUserPipe implements PipeTransform {
     if (!users || !searchText) return users;
 
     return users.filter(user => {
-        return user.firstName.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
+      return user.firstName.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
     });
 
-}
+  }
+  
 }

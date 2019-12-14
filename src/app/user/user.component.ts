@@ -54,7 +54,6 @@ export class UserComponent implements OnInit {
     this.validateControls = true;
 
     if (this.userForm.invalid) {
-      console.log("Error");
       return
     } else {
 
@@ -74,7 +73,6 @@ export class UserComponent implements OnInit {
     }
 
   }
-
 
   // Component method for adding a new User
   onReset() {

@@ -1,0 +1,141 @@
+<form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+
+  <div class="form-group row">
+    <label for="project" class="col-sm-2 col-form-label">Project</label>
+    <div class="col-sm-5">
+      <input type="text" class="form-control" id="project" formControlName="project" [ngClass]="{ 'is-invalid': validateControls && formControls.project.errors }">
+    </div>
+    <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+      <div *ngIf="formControls.project.errors.required">Project is required</div>
+    </div>
+  </div>
+
+
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="gridCheck" formControlName="setDates">
+        <label for="gridCheck" class="form-check-label">
+          Set Start and End Date
+        </label>
+      </div>
+    </div>
+
+    <div class="col-sm-2">
+      <input type="date" class="form-control" formControlName="startDate" [ngClass]="{ 'is-invalid': formControls.setDates && validateControls && formControls.startDate.errors }">
+      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+        <div *ngIf="formControls.startDate.errors.required">Start date is required</div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <input type="date" class="form-control" formControlName="endDate" [ngClass]="{ 'is-invalid': formControls.setDates && validateControls && formControls.endDate.errors }">
+      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+        <div *ngIf="formControls.endDate.errors.required">End date is required</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Priority</label>
+    <div class="col-sm-5">
+      <input type="range" class="form-control-range" min="0" max="30" value="0" formControlName="priority" [ngClass]="{ 'is-invalid': validateControls && formControls.priority.errors }">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Manager</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" formControlName="manager_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.manager_Id.errors }"
+        [disableControl]="true">
+      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+        <div *ngIf="formControls.manager_Id.errors.required">Manager id is required</div>
+      </div>
+    </div>
+
+    <div class="col-sm-1">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSearchModal">Search</button>
+    </div>
+
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2" *ngIf="!updateBtn">
+      <button type="button" class="btn btn-primary btn-block" (click)="onAddProject()">Add</button>
+    </div>
+    <div class="col-sm-2" *ngIf="updateBtn">
+      <button type="button" class="btn btn-primary btn-block" (click)="onUpdateProject()">Update</button>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="reset" class="btn btn-primary btn-block" (click)="onReset()">Reset</button>
+    </div>
+  </div>
+
+</form>
+
+<hr>
+
+<form>
+
+  <div class="form-group row">
+
+    <div class="col-sm-9">
+      <input type="text" class="form-control" [(ngModel)]="searchText" name="searchText" placeholder="Search..">
+    </div>
+
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-1">
+      <label class="col-form-label">Sort By</label>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" (click)="onSortByStartDate()">Start Date</button>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" (click)="onSortByEndDate()">End Date</button>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" (click)="onSortByPriority()">Priority</button>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" (click)="onSortByCompleted()">Completed</button>
+    </div>
+
+  </div>
+</form>
+
+<ul class="list-group" id="projectList">
+  <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let project of projectList  | sortProject:sortOrder | filterProject: searchText">
+    <app-project-list-item [projectData]="project" (reloadProject)="getProjects()" (projectSelected)="onProjectSelected($event)"></app-project-list-item>
+  </li>
+</ul>
+
+
+<!-- Search Modal -->
+<div class="modal fade" id="userSearchModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Search Users</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group" id="projectList">
+          <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let user of userList">
+            <button type="button" class="list-group-item list-group-item-action" data-dismiss="modal" (click)="onUserSelected(user)">{{user.firstName}}
+              {{user.lastName}}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
