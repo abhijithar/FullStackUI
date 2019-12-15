@@ -3,10 +3,10 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Project</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control" formControlName="project_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.project_Id.errors }"
+      <input type="text" class="form-control" formControlName="project" [ngClass]="{ 'is-invalid': validateControls && formControls.project.errors }"
         [disableControl]="true">
-      <div *ngIf="validateControls && formControls.project_Id.errors" class="invalid-feedback">
-        <div *ngIf="formControls.manager_Id.errors.required">Project id is required</div>
+      <div *ngIf="validateControls && formControls.project.errors" class="invalid-feedback">
+        <div *ngIf="formControls.project.errors.required">Project id is required</div>
       </div>
     </div>
 
@@ -51,10 +51,10 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Parent Task</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control" formControlName="parentTask_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.parentTask_Id.errors }"
+      <input type="text" class="form-control" formControlName="parentTaskDesc" [ngClass]="{ 'is-invalid': validateControls && formControls.parentTaskDesc.errors }"
         [disableControl]="true">
-      <div *ngIf="validateControls && formControls.parentTask_Id.errors" class="invalid-feedback">
-        <div *ngIf="formControls.parentTask_Id.errors.required">Parent task is required</div>
+      <div *ngIf="validateControls && formControls.parentTaskDesc.errors" class="invalid-feedback">
+        <div *ngIf="formControls.parentTaskDesc.errors.required">Parent task is required</div>
       </div>
     </div>
 
@@ -86,10 +86,10 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">User</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control" formControlName="user_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.user_Id.errors }"
+      <input type="text" class="form-control" formControlName="userName" [ngClass]="{ 'is-invalid': validateControls && formControls.userName.errors }"
         [disableControl]="true">
-      <div *ngIf="validateControls && formControls.user_Id.errors" class="invalid-feedback">
-        <div *ngIf="formControls.user_Id.errors.required">User id is required</div>
+      <div *ngIf="validateControls && formControls.userName.errors" class="invalid-feedback">
+        <div *ngIf="formControls.userName.errors.required">User id is required</div>
       </div>
     </div>
 
@@ -104,7 +104,7 @@
       <button type="button" class="btn btn-primary btn-block" (click)="onAddTask()">Add</button>
     </div>
     <div class="col-sm-2" *ngIf="updateBtn">
-      <button type="button" class="btn btn-primary btn-block" (click)="onUpdateProject()">Update</button>
+      <button type="button" class="btn btn-primary btn-block" (click)="onUpdateTask()">Update</button>
     </div>
 
     <div class="col-sm-2">

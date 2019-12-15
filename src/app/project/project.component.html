@@ -46,10 +46,10 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Manager</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control" formControlName="manager_Id" [ngClass]="{ 'is-invalid': validateControls && formControls.manager_Id.errors }"
+      <input type="text" class="form-control" formControlName="manager" [ngClass]="{ 'is-invalid': validateControls && formControls.manager.errors }"
         [disableControl]="true">
-      <div *ngIf="validateControls && formControls.manager_Id.errors" class="invalid-feedback">
-        <div *ngIf="formControls.manager_Id.errors.required">Manager id is required</div>
+      <div *ngIf="validateControls && formControls.manager.errors" class="invalid-feedback">
+        <div *ngIf="formControls.manager.errors.required">Manager id is required</div>
       </div>
     </div>
 

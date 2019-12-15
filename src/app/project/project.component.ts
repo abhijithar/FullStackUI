@@ -49,7 +49,8 @@ export class ProjectComponent implements OnInit {
       startDate: [{ value: '', disabled: true }, Validators.required],
       endDate: [{ value: '', disabled: true }, Validators.required],
       priority: [''],
-      manager_Id: ['', Validators.required]
+      manager_Id: ['', Validators.required],
+      manager: ['']
     });
 
     // Get the list of projects
@@ -185,7 +186,18 @@ export class ProjectComponent implements OnInit {
   }
 
   onUserSelected(user: User) {
-    this.formControls.manager_Id.setValue(user.employee_Id)
+    this.formControls.manager_Id.setValue(user.employee_Id);
+    this.formControls.manager.setValue(this.getManagerName(user.employee_Id));
+  }
+
+  getManagerName(employeeId) {
+
+    for (var i = 0; i < this.userList.length; i++) {
+      if (this.userList[i].employee_Id == employeeId) {
+        return this.userList[i].firstName + ' ' + this.userList[i].lastName;
+      }
+    }
+
   }
 
 }

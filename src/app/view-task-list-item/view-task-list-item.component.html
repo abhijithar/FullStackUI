@@ -1,0 +1,29 @@
+<form>
+
+  <div class="form-group row">
+
+    <label class="col-sm-3 col-form-label">Task</label>
+    <label class="col-sm-2 col-form-label">Parent Task</label>
+    <label class="col-sm-1 col-form-label">Priority</label>
+    <label class="col-sm-2 col-form-label">Start Date</label>
+    <label class="col-sm-2 col-form-label">End Date</label>
+
+  </div>
+
+  <div class="form-group row">
+
+    <label class="col-sm-3 col-form-label">{{taskData.task}}</label>
+    <label class="col-sm-2 col-form-label">{{findParentDesc(taskData.parentTask_Id)}}</label>
+    <label class="col-sm-1 col-form-label">{{taskData.priority}}</label>
+    <label class="col-sm-2 col-form-label"
+      *ngIf="taskData.startDate !== undefined">{{formatDate(taskData.startDate)}}</label>
+    <label class="col-sm-2 col-form-label"
+      *ngIf="taskData.endDate !== undefined">{{formatDate(taskData.endDate)}}</label>
+    <label class="col-sm-2 col-form-label" *ngIf="taskData.startDate === undefined"></label>
+    <label class="col-sm-2 col-form-label" *ngIf="taskData.endDate === undefined"></label>
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" (click)="onEditTask(taskData)">Edit</button>
+      <button type="button" class="btn btn-primary  btn-block" (click)="onCompleteTask(taskData)">End Task</button>
+    </div>
+  </div>
+</form>

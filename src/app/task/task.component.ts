@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 import { User } from '../core/models/user';
@@ -31,6 +32,7 @@ export class TaskComponent implements OnInit {
   counterData: Counter;
   validateControls: boolean = false;
   updateBtn: boolean = false;
+  loadDetails: number = 0;
 
   constructor(
     private projectSvc: ProjectService,
@@ -38,7 +40,8 @@ export class TaskComponent implements OnInit {
     private taskSvc: TaskService,
     private counterSvc: CounterService,
     private formBuilder: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -47,13 +50,18 @@ export class TaskComponent implements OnInit {
     this.taskForm = this.formBuilder.group({
       task_Id: [''],
       project_Id: ['', Validators.required],
+      project: [''],
       task: ['', Validators.required],
       parentTask: [false],
       priority: [{ value: 0, disabled: true }, Validators.required],
       parentTask_Id: [{ value: '', disabled: true }, Validators.required],
+      parentTaskDesc: [''],
       startDate: [{ value: '', disabled: true }, Validators.required],
       endDate: [{ value: '', disabled: true }, Validators.required],
       user_Id: [{ value: '', disabled: true }, Validators.required],
+      userName: [''],
+      status: [''],
+      loadDetails: [0]
     });
 
     // Get the list of projects
@@ -70,6 +78,48 @@ export class TaskComponent implements OnInit {
       this.setParentTask(selection)
     );
 
+    // Set the value changes subscription
+    this.formControls.loadDetails.valueChanges.subscribe(number =>
+      this.route.params.subscribe(params => {
+
+        if (number === 3)
+          this.getTaskDetails(params);
+
+      })
+    );
+
+  }
+
+  getTaskDetails(params) {
+
+    if (params.taskId !== undefined) {
+
+      this.updateBtn = true;
+
+      for (var i = 0; i < this.taskList.length; i++) {
+        if (this.taskList[i].task_Id == params.taskId) {
+
+          this.taskForm.patchValue({
+            task_Id: this.taskList[i].task_Id,
+            project_Id: this.taskList[i].project_Id,
+            project: this.findProject(this.taskList[i].project_Id),
+            task: this.taskList[i].task,
+            parentTask: this.taskList[i].parentTask,
+            priority: this.taskList[i].priority,
+            parentTask_Id: this.taskList[i].parentTask_Id,
+            parentTaskDesc: this.findTask(this.taskList[i].parentTask_Id),
+            startDate: this.taskList[i].startDate ? this.formatDate(this.taskList[i].startDate) : null,
+            endDate: this.taskList[i].startDate ? this.formatDate(this.taskList[i].endDate) : null,
+            status: this.taskList[i].status,
+            user_Id: this.taskList[i].user_Id,
+            userName: this.findUserName(this.taskList[i].user_Id)
+          });
+
+        }
+      }
+
+    }
+
   }
 
   // Convenience getter for easy access to form fields
@@ -82,6 +132,7 @@ export class TaskComponent implements OnInit {
     this.projectSvc.getProject().subscribe(
       (res: Project[]) => {
         this.projectList = res;
+        this.formControls.loadDetails.setValue(this.formControls.loadDetails.value + 1);
       }
     );
 
@@ -93,6 +144,7 @@ export class TaskComponent implements OnInit {
     this.userSvc.getUser().subscribe(
       (res: User[]) => {
         this.userList = res;
+        this.formControls.loadDetails.setValue(this.formControls.loadDetails.value + 1);
       }
     );
 
@@ -104,11 +156,12 @@ export class TaskComponent implements OnInit {
     this.taskSvc.getTask().subscribe(
       (res: Task[]) => {
         this.taskList = res;
-        console.log(this.taskList);
+        this.formControls.loadDetails.setValue(this.formControls.loadDetails.value + 1);
       }
     );
 
   }
+
   setParentTask(enable) {
 
     if (!enable) {
@@ -131,9 +184,9 @@ export class TaskComponent implements OnInit {
 
   onAddTask() {
 
+    this.validateControls = true;
     console.log(this.taskForm.value);
 
-    this.validateControls = true;
 
     if (this.taskForm.invalid) {
       return
@@ -161,6 +214,7 @@ export class TaskComponent implements OnInit {
           );
 
         })
+        
       // Get the list of Tasks
       this.getTasks();
 
@@ -168,16 +222,95 @@ export class TaskComponent implements OnInit {
 
   }
 
+  onUpdateTask() {
+
+    this.validateControls = true;
+    if (this.taskForm.invalid) {
+      return
+    } else {
+
+      // Assign the model from the form values
+      this.taskData = this.taskForm.value;
+      this.taskData.project_Id = this.formControls.project_Id.value;
+      this.taskData.user_Id = this.formControls.user_Id.value;
+      this.taskData.parentTask_Id = this.formControls.parentTask_Id.value;
+
+      // Invoke the addUser service method for adding the user details
+      this.taskSvc.updateTask(this.taskData).subscribe(
+        (res: any) => {
+          this.taskForm.reset();
+          this.validateControls = false;
+        }
+      );
+
+    }
+
+  }
+
   onUserSelected(user: User) {
-    this.formControls.user_Id.setValue(user.user_Id)
+    this.formControls.user_Id.setValue(user.user_Id);
+    this.formControls.userName.setValue(this.findUserName(user.user_Id));
   }
 
   onProjectSelected(project: Project) {
-    this.formControls.project_Id.setValue(project.project_Id)
+    this.formControls.project_Id.setValue(project.project_Id);
+    this.formControls.project.setValue(project.project)
   }
 
   onTaskSelected(task: Task) {
     this.formControls.parentTask_Id.setValue(task.task_Id);
+    this.formControls.parentTaskDesc.setValue(this.findParentDesc(task.task_Id));
+  }
+
+  findParentDesc(taskId) {
+    for (var i = 0; i < this.taskList.length; i++) {
+      if (this.taskList[i].task_Id == taskId) {
+        return this.taskList[i].task;
+      }
+    }
+
+  }
+
+  findUserName(userId) {
+
+    for (var i = 0; i < this.userList.length; i++) {
+      if (this.userList[i].user_Id == userId) {
+        return this.userList[i].firstName + ' ' + this.userList[i].lastName;
+      }
+    }
+
+  }
+
+  findProject(projectId) {
+
+    for (var i = 0; i < this.projectList.length; i++) {
+      if (this.projectList[i].project_Id == projectId) {
+        return this.projectList[i].project;
+      }
+    }
+
+  }
+
+  findTask(taskId) {
+
+    for (var i = 0; i < this.taskList.length; i++) {
+      if (this.taskList[i].task_Id == taskId) {
+        return this.taskList[i].task;
+      }
+    }
+
+  }
+
+  formatDate(date) {
+    let wrkDate = new Date(date);
+    return (this.datePipe.transform(wrkDate, 'yyyy-MM-dd'));
+  }
+
+  onReset() {
+
+    this.validateControls = false;
+    this.taskForm.reset();
+
   }
 
 }
