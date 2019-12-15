@@ -14,26 +14,6 @@
           data-target="#projectSearchModal">Search</button>
       </div>
 
-      <div class="col-sm-1">
-        <label class="col-form-label">Sort By</label>
-      </div>
-
-      <div class="col-sm-1">
-        <button type="button" class="btn btn-primary" (click)="onSortByStartDate()">Start Date</button>
-      </div>
-
-      <div class="col-sm-1">
-        <button type="button" class="btn btn-primary" (click)="onSortByEndDate()">End Date</button>
-      </div>
-
-      <div class="col-sm-1">
-        <button type="button" class="btn btn-primary" (click)="onSortByPriority()">Priority</button>
-      </div>
-
-      <div class="col-sm-1">
-        <button type="button" class="btn btn-primary" (click)="onSortByStatus()">Completed</button>
-      </div>
-
     </div>
   </div>
 </form>
@@ -41,7 +21,8 @@
 <ul class="list-group" id="taskList">
   <li class="list-group-item d-flex justify-content-between align-items-center"
     *ngFor="let task of taskList | sortTask:sortOrder">
-    <app-view-task-list-item [taskList]="taskList" [taskData]="task" *ngIf="task.project_Id === formControls.project_Id.value">
+    <app-view-task-list-item [taskList]="taskList" [taskData]="task"
+      *ngIf="task.project_Id === formControls.project_Id.value">
     </app-view-task-list-item>
   </li>
 </ul>
