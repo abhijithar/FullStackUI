@@ -185,9 +185,6 @@ export class TaskComponent implements OnInit {
   onAddTask() {
 
     this.validateControls = true;
-    console.log(this.taskForm.value);
-
-
     if (this.taskForm.invalid) {
       return
     } else {
