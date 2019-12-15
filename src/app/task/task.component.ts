@@ -4,9 +4,11 @@ import { DatePipe } from '@angular/common';
 
 import { User } from '../core/models/user';
 import { Task } from '../core/models/task';
+import { Counter } from '../core/models/counter';
 import { Project } from '../core/models/project';
 
 import { ProjectService } from '../core/services/project.service';
+import { CounterService } from '../core/services/counter.service';
 import { UserService } from '../core/services/user.service';
 import { TaskService } from '../core/services/task.service';
 
@@ -26,6 +28,7 @@ export class TaskComponent implements OnInit {
   projectList: Project[];
   userData: User;
   userList: User[];
+  counterData: Counter;
   validateControls: boolean = false;
   updateBtn: boolean = false;
 
@@ -33,6 +36,7 @@ export class TaskComponent implements OnInit {
     private projectSvc: ProjectService,
     private userSvc: UserService,
     private taskSvc: TaskService,
+    private counterSvc: CounterService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe
   ) { }
@@ -41,6 +45,7 @@ export class TaskComponent implements OnInit {
 
     // Define the from group for project
     this.taskForm = this.formBuilder.group({
+      task_Id: [''],
       project_Id: ['', Validators.required],
       task: ['', Validators.required],
       parentTask: [false],
@@ -56,6 +61,9 @@ export class TaskComponent implements OnInit {
 
     // Get the list of Users
     this.getUsers();
+
+    // Get the list of Tasks
+    this.getTasks();
 
     // Set the value changes subscription
     this.formControls.parentTask.valueChanges.subscribe(selection =>
@@ -90,6 +98,17 @@ export class TaskComponent implements OnInit {
 
   }
 
+  getTasks() {
+
+    // Get the list of Users
+    this.taskSvc.getTask().subscribe(
+      (res: Task[]) => {
+        this.taskList = res;
+        console.log(this.taskList);
+      }
+    );
+
+  }
   setParentTask(enable) {
 
     if (!enable) {
@@ -126,13 +145,24 @@ export class TaskComponent implements OnInit {
       this.taskData.user_Id = this.formControls.user_Id.value;
       this.taskData.parentTask_Id = this.formControls.parentTask_Id.value;
 
-      // Invoke the addUser service method for adding the user details
-      this.taskSvc.addTask(this.taskData).subscribe(
-        (res: any) => {
-          this.taskForm.reset();
-          this.validateControls = false;
-        }
-      );
+
+      this.counterData = new Counter('TaskId', '', 0);
+      this.counterSvc.getNextId(this.counterData).subscribe(
+        (res: Counter) => {
+
+          this.taskData.task_Id = res.prefix + res.sequenceVal;
+
+          // Invoke the addUser service method for adding the user details
+          this.taskSvc.addTask(this.taskData).subscribe(
+            (res: any) => {
+              this.taskForm.reset();
+              this.validateControls = false;
+            }
+          );
+
+        })
+      // Get the list of Tasks
+      this.getTasks();
 
     }
 
@@ -144,6 +174,10 @@ export class TaskComponent implements OnInit {
 
   onProjectSelected(project: Project) {
     this.formControls.project_Id.setValue(project.project_Id)
+  }
+
+  onTaskSelected(task: Task) {
+    this.formControls.parentTask_Id.setValue(task.task_Id);
   }
 
 }

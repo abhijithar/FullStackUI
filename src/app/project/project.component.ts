@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
- 
+
 import { User } from '../core/models/user';
 import { Project } from '../core/models/project';
+import { Counter } from '../core/models/counter';
 
 import { ProjectService } from '../core/services/project.service';
 import { UserService } from '../core/services/user.service';
+import { CounterService } from '../core/services/counter.service';
 
 @Component({
   selector: 'app-project',
@@ -22,6 +24,7 @@ export class ProjectComponent implements OnInit {
   projectList: Project[];
   userData: User;
   userList: User[];
+  counterData: Counter;
   sortOrder: string = 'project';
   validateControls: boolean = false;
   updateBtn: boolean = false;
@@ -29,6 +32,7 @@ export class ProjectComponent implements OnInit {
   constructor(
     private projectSvc: ProjectService,
     private userSvc: UserService,
+    private counterSvc: CounterService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe
   ) { }
@@ -112,7 +116,7 @@ export class ProjectComponent implements OnInit {
   }
 
   onProjectSelected(projectData: Project) {
-    
+
     if (projectData !== null) {
 
       let strDate = new Date(projectData.startDate);
@@ -158,16 +162,22 @@ export class ProjectComponent implements OnInit {
       // Assign the model from the form values
       this.projectData = this.projectForm.value;
       this.projectData.manager_Id = this.formControls.manager_Id.value;
-      console.log(this.projectData);
 
-      // Invoke the addUser service method for adding the user details
-      this.projectSvc.addProject(this.projectData).subscribe(
-        (res: any) => {
-          this.projectForm.reset();
-          this.validateControls = false;
-        }
-      );
+      this.counterData = new Counter('ProjectId', '', 0);
+      this.counterSvc.getNextId(this.counterData).subscribe(
+        (res: Counter) => {
 
+          this.projectData.project_Id = res.prefix + res.sequenceVal;
+
+          // Invoke the addUser service method for adding the user details
+          this.projectSvc.addProject(this.projectData).subscribe(
+            (res: any) => {
+              this.projectForm.reset();
+              this.validateControls = false;
+            }
+          );
+
+        })
       // Get the list of Projects after add to repopulate the grid
       this.getProjects();
     }
