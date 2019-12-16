@@ -28,6 +28,7 @@ export class ProjectComponent implements OnInit {
   sortOrder: string = 'project';
   validateControls: boolean = false;
   updateBtn: boolean = false;
+  searchText: string;
 
   constructor(
     private projectSvc: ProjectService,

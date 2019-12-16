@@ -14,7 +14,7 @@ export class UserListItemComponent implements OnInit {
   @Input() userData: User;
   @Output() userSelected = new EventEmitter();
   @Output() reloadUser = new EventEmitter();
-
+  
   constructor(
     private userSvc: UserService
   ) { }

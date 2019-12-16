@@ -23,6 +23,7 @@ export class UserComponent implements OnInit {
   sortOrder: string = 'firstName';
   validateControls: boolean = false;
   updateBtn: boolean = false;
+  searchText: string;
 
   // Inject the necessary services
   constructor(
